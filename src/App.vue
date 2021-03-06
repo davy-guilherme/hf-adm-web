@@ -1,32 +1,63 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <base-spinner />
+    <layout v-if="isLogged">
+      <layout-navigation />
+      <router-view id="conteudo" />
+    </layout>
+
+    <!--<button @click="mostrarSpinner()">Mostrar Spinner</button>-->
+    <router-view  v-else />
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import BaseSpinner from './components/global/BaseSpinner'
+import LayoutNavigation from './components/layout/LayoutNavigation'
 
-#nav {
-  padding: 30px;
+export default {
+  name: 'AppComponente',
+  components: {
+    BaseSpinner,
+    LayoutNavigation
+  },
+  data: () => ({
+    isLogged: false
+  }),
+  methods: {
+    //mostrarSpinner() {
+     // this.$root.$emit('Spinner::show')
+    //}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+  },
+  mounted () {
+    //console.log(this.$firebase)
+    this.$firebase.auth().onAuthStateChanged(user => {
+      //operacao ternaria
+      window.uid = user ? user.uid : null
+      this.isLogged = !!user
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+      if (window.uid) {
+        this.$router.push({ name : 'home' })
+
+      } else {
+        this.$router.push({ name : 'login' })
+      }
+      setTimeout(() => {
+        this.$root.$emit('Spinner::hide')
+      }, 300)
+
+
+    })
   }
+
 }
+</script>
+
+<style lang="scss">
+
+#conteudo {
+  margin-top: 2.7em;
+}
+
 </style>
