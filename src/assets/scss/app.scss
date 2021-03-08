@@ -1,11 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,600;0,700;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100&display=swap');
 @import '../../../node_modules/@fortawesome/fontawesome-free/css/all.css';
 @import 'variables';
+
+
 
 * {
     margin: 0;
     padding: 0;
-    font-family: 'Rubik', sans-serif;
+    font-family: 'Avenir', 'Poppins', sans-serif;
 }
 
 p, label, button {
@@ -30,10 +32,16 @@ button {
     background-color: var(--featured);
     border: none;
     padding: 0.4em 2em;
-    margin-top: 0.6em;
     border-radius: 0.3em;
 
     &:hover {
         background-color: var(--featured-dark);
+    }
+}
+
+.btn-cancelar {
+    background-color: #B24038;
+    &:hover {
+        background-color: #ac3027;
     }
 }

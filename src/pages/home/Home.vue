@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div>
     <h1>Home</h1>
     <div id="box-vendas">
       Teste
@@ -19,6 +19,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
 h1 {
   padding: 0.5em 5%;
   text-align: left;

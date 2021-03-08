@@ -6,6 +6,7 @@
 
 <script>
 export default {
+    name: 'Spinner',
     data () {
         return {
             visible: true

@@ -42,14 +42,36 @@ export default {
             const { email, senha } = this
 
             try {
-                const res = await this.$firebase.auth().signInWithEmailAndPassword(email, senha);
+                await this.$firebase.auth().signInWithEmailAndPassword(email, senha);
+                //const res = await this.$firebase.auth().signInWithEmailAndPassword(email, senha);
                 //soh consigo usar await in funcoes assincronas
                 //console.log(res)
-                window.uid = res.user.uid
+                //window.uid = res.user.uid
                 //this.$router.push({ name: 'home' })
+                this.$root.$emit('Notification::show', {
+                    type: 'n-sucesso',
+                    message: 'Login realizado com sucesso.'
+                })
 
             } catch (err) {
-                console.log(err)
+                let message = ''
+                //tratar 2 principais tipos de erro
+                switch (err.code) {
+                    case 'auth/user-not-found' :
+                        message = 'Não foi possível localizar o usuário.'
+                        break
+                    case 'auth/wrong-password' :
+                        message = 'Senha inválida'
+                        break
+                    default:
+                        message = 'Não foi possível fazer login, tente novamente'
+                }
+
+                this.$root.$emit('Notification::show', {
+                    type: 'n-erro',
+                    message: message
+                })
+
             }
 
             this.loading = false
@@ -106,6 +128,7 @@ input {
 button {
     display: block;
     color: var(--ligther);
+    margin-top: 0.6em;
 }
 
 @media (max-width: 1199.98px) {

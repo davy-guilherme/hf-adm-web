@@ -9,6 +9,8 @@ import './assets/scss/app.scss'
 Vue.use(FirebaseVue)
 Vue.config.productionTip = false
 
+
+
 new Vue({
   router,
   render: h => h(App)

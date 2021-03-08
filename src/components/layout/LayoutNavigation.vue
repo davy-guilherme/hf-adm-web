@@ -6,7 +6,7 @@
 
 
             <ul>
-                <li @click="this.$router.push({ name: 'login' })">
+                <li @click="abrir_inicio()">
                     Início
                     <i class="fas fa-home"></i>
                 </li>
@@ -14,7 +14,7 @@
                     Produtos
                     <i class="fas fa-lemon"></i>
                 </li>
-                <li>
+                <li @click="abrir_entregadores()">
                     Entregadores
                     <!--<i class="fas fa-truck"></i>-->
                     <i class="fas fa-people-arrows"></i>
@@ -44,6 +44,9 @@
                 </li>
             </ul>
         </nav>
+        <div class="navigation-sobra" :class="{ fundoAtivo : fundoAtivo}" @click="toogle_menu()">
+
+        </div>
 
     </div>
 
@@ -54,13 +57,14 @@ export default {
     name: 'LayoutNavigation',
     data: () => {
         return {
-            ativo: false
+            ativo: false,
+            fundoAtivo: false,
         }
     },
     methods: {
         toogle_menu() {
-
             this.ativo = !this.ativo
+            this.fundoAtivo = !this.fundoAtivo
         },
         async sair () {
             this.$root.$emit('Spinner::show')
@@ -70,6 +74,14 @@ export default {
             this.$router.push({ name: 'login' })
 
             this.$root.$emit('Spinner::hide')
+        },
+        abrir_inicio() {
+            this.$router.push({ name: 'home' })
+            this.toogle_menu()
+        },
+        abrir_entregadores () {
+            this.$router.push({ name: 'entregadores' })
+            this.toogle_menu()
         }
 
     }
@@ -79,9 +91,10 @@ export default {
 <style scoped lang="scss">
 
 
+
 #btn-menu {
     font-size: 1.7em;
-    position: absolute;
+    position: fixed;
     top: 1em;
     left: 5%;
     z-index: 980;
@@ -103,18 +116,33 @@ export default {
     z-index: 990;
 }
 
+.navigation-sobra {
+    position: fixed;
+    top: 0;
+    right: -83%;
+    width: 83%;
+    height: 100%;
+    background-color: transparent;
+    z-index: 990;
+}
+
 .ativo {
     left: 0 !important;
 
+}
+
+.fundoAtivo {
+    right: 0 !important;
 }
 
 #btn-menu-fechar {
     font-size: 1.7em;
     position: absolute;
     top: 1em;
-    right: 7%;
+    right: 9%;
     z-index: 980;
     cursor: pointer;
+
 }
 
 ul {
@@ -123,8 +151,8 @@ ul {
 }
 
 li {
-    padding: 5% 7%;
-    width: 86%;
+    padding: 5% 9%;
+    width: 82%;
     cursor: pointer;
     &:hover {
         background-color: var(--featured-dark);
@@ -150,6 +178,11 @@ li i {
 
 }
 
+.navigation-sobra {
+    width: 73%;
+    right: -73%;
+}
+
 }
 
 @media (max-width: 991.98px) {
@@ -158,6 +191,11 @@ li i {
     left: -35%;
     width: 35%;
 
+}
+
+.navigation-sobra {
+    width: 65%;
+    right: -65%;
 }
 
 }
@@ -170,6 +208,11 @@ li i {
 
 }
 
+.navigation-sobra {
+    width: 45%;
+    right: -45%;
+}
+
 }
 
 @media (max-width: 575.98px) {
@@ -178,6 +221,11 @@ li i {
     left: -70%;
     width: 70%;
 
+}
+
+.navigation-sobra {
+    width: 30%;
+    right: -30%;
 }
 
 }

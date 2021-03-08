@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <base-spinner />
+    <layout-notification />
     <layout v-if="isLogged">
       <layout-navigation />
       <router-view id="conteudo" />
@@ -14,12 +15,14 @@
 <script>
 import BaseSpinner from './components/global/BaseSpinner'
 import LayoutNavigation from './components/layout/LayoutNavigation'
+import LayoutNotification from './components/layout/LayoutNotification'
 
 export default {
   name: 'AppComponente',
   components: {
     BaseSpinner,
-    LayoutNavigation
+    LayoutNavigation,
+    LayoutNotification
   },
   data: () => ({
     isLogged: false
@@ -55,6 +58,7 @@ export default {
 </script>
 
 <style lang="scss">
+
 
 #conteudo {
   margin-top: 2.7em;
