@@ -3,7 +3,7 @@
         <h1>Entregadores</h1>
         <adicionar-entregador />
         <div class="entregadores">
-          <div class="entregador" v-for="entregador in entregadores" :key="entregador">
+          <div class="entregador" v-for="entregador in entregadores" :key="entregador.id">
             <p class="entregador-nome">{{ entregador.nome }}</p>
             <p class="entregador-telefone"></p>
             <div class="entregador-mod">
@@ -12,6 +12,7 @@
                 <i v-if="entregador.moto == true" class="fas fa-motorcycle"></i>
                 <i v-if="entregador.carro == true" class="fas fa-car"></i>
             </div>
+            <i class="far fa-eye ver" @click="ver_entregador(entregador.id)"></i>
           </div>
         </div>
     </div>
@@ -37,6 +38,10 @@ export default {
           const values = snapshot.val()
           this.entregadores = Object.keys(values).map(i => values[i])
         })
+      },
+      ver_entregador (idEntregador) {
+        this.$router.push({ name: 'entregador', params: { id: idEntregador } })
+        //console.log(idEntregador)
       }
     }
 
@@ -64,10 +69,11 @@ h1 {
 }
 
 .entregador {
-  background-color: var(--dark-low);
+  background-color: #999;
   margin: 1em 0;
   padding: 0.5em;
   border-radius: 0.5em;
+  position: relative;
 }
 
 .entregador-mod i {
@@ -75,6 +81,18 @@ h1 {
   margin-right: 0.5em;
   color: #fff;
 
+}
+
+.ver {
+  position: absolute;
+  right: 2%;
+  top: 27%;
+  font-size: 2.1em;
+  cursor: pointer;
+  color: white;
+  &:hover {
+    color: var(--dark-medium);
+  }
 }
 
 

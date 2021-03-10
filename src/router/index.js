@@ -22,6 +22,11 @@ const routes = [
     path: '/entregadores',
     name: 'entregadores',
     component: () => import(/* webpackChunkName: "entregadores" */ '../pages/entregadores/Entregadores')
+  },
+  {
+    path: '/entregador/:id',
+    name: 'entregador',
+    component: () => import(/* webpackChunkName: "entregador" */ '../pages/entregadores/Entregador')
   }
 ]
 

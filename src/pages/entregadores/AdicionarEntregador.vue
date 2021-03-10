@@ -16,7 +16,7 @@
                 <input class="f-input" required type="date" v-model="formulario.nascimento" />
 
                 <label class="f-label" for="telefone">Telefone:</label>
-                <input class="f-input" required type="text" v-model="formulario.telefone" />
+                <input class="f-input" required type="text" v-model="formulario.tel" />
 
                 <div class="os-checks">
                     <p>Modalidades</p>
@@ -121,6 +121,7 @@ export default {
     z-index: 900;
     background-color: rgba(255, 255, 255, 0.8);
     display: none;
+    overflow: scroll;
 }
 
 .box-adicionar-entregador {
@@ -141,7 +142,8 @@ export default {
 
 #fechar-modal {
     position: absolute;
-    right: 2%;
+    right: 2.5%;
+    top: 1.1em;
     cursor: pointer;
     font-size: 1.9em;
 }
@@ -170,5 +172,61 @@ export default {
 .os-checks {
     margin-top: 1em;
 }
+
+@media (max-width: 1199.98px) {
+
+.box-adicionar-entregador {
+    width: 70%;
+    left: 13%;
+    top: 9%;
+    padding: 1.5em 2%;
+}
+
+#fechar-modal {
+    font-size: 1.7em;
+}
+
+.f-label {
+    display: block;
+    margin-top: 0.5em;
+}
+
+.f-input {
+    display: block;
+    width: 98%;
+    border-radius: 0.3em;
+    border: none;
+    padding: 1%;
+
+}
+
+.f-button {
+    color: var(--ligther);
+    margin-top: 0.6em;
+    margin-left: 1.5em;
+    float: right;
+}
+
+.os-checks {
+    margin-top: 1em;
+}
+
+
+
+}
+
+@media (max-width: 991.98px) {
+
+}
+
+@media (max-width: 767.98px) {
+
+
+}
+
+@media (max-width: 575.98px) {
+
+}
+
 
 </style>

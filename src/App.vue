@@ -52,7 +52,16 @@ export default {
 
 
     })
-  }
+  },
+  /*metaInfo() {
+    return {
+      meta:
+      {
+        name: 'description',
+        content: 'teste'
+      }
+    }
+  }*/
 
 }
 </script>
@@ -61,7 +70,7 @@ export default {
 
 
 #conteudo {
-  margin-top: 2.7em;
+  padding-top: 2.7em;
 }
 
 </style>

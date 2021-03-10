@@ -165,7 +165,7 @@ li i {
 }
 
 .btn-sair {
-    margin-top: 20%;
+    margin-top: 9%;
     color: var(--dark);
 }
 
