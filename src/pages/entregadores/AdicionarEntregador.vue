@@ -1,9 +1,9 @@
 <template>
     <div>
-        <button class="btn-add-entregador" @click="toogle_modal()">Adicionar Entregador</button>
+        <button class="btn-add" @click="toogle_modal()">Adicionar Entregador</button>
 
-        <div class="adicionar-entregador-fundo" :class="{ ativo : showModal }">
-            <form @submit.prevent="submit()" class="box-adicionar-entregador">
+        <div class="adicionar-fundo" :class="{ ativo : showModal }">
+            <form @submit.prevent="submit()" class="box-adicionar">
                 <i class="far fa-times-circle" id="fechar-modal" @click="toogle_modal()"></i>
                 <h1>Entregador</h1>
                 <label class="f-label" for="email">Nome:</label>
@@ -104,36 +104,34 @@ export default {
 
 <style scoped lang="scss">
 
-.btn-add-entregador {
+.btn-add {
     margin:0 auto !important;
     display:block !important;
     color: white;
 
 }
 
-.adicionar-entregador-fundo {
+.adicionar-fundo {
     top: 0;
     right: 0;
     position: fixed;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     color: white;
     z-index: 900;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: #999;
     display: none;
     overflow: scroll;
 }
 
-.box-adicionar-entregador {
-    width: 70%;
+.box-adicionar {
+    width: 90%;
     height: auto;
     position: absolute;
-    left: 13%;
-    top: 9%;
-    background-color: var(--dark-low);
+    left: 5%;
+    top: 3.8em;
     color: white;
-    border-radius: 0.7em;
-    padding: 1.5em 2%;
+    padding: 0;
 }
 
 .ativo {
@@ -142,8 +140,8 @@ export default {
 
 #fechar-modal {
     position: absolute;
-    right: 2.5%;
-    top: 1.1em;
+    right: 0;
+    top: 0.6em;
     cursor: pointer;
     font-size: 1.9em;
 }
@@ -175,12 +173,12 @@ export default {
 
 @media (max-width: 1199.98px) {
 
-.box-adicionar-entregador {
+/*.box-adicionar-entregador {
     width: 70%;
     left: 13%;
     top: 9%;
     padding: 1.5em 2%;
-}
+}*/
 
 #fechar-modal {
     font-size: 1.7em;

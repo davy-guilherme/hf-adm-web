@@ -19,7 +19,7 @@
                     <!--<i class="fas fa-truck"></i>-->
                     <i class="fas fa-people-arrows"></i>
                 </li>
-                <li>
+                <li @click="abrir_banners()">
                     Banners
                     <i class="fas fa-ad"></i>
                 </li>
@@ -81,6 +81,10 @@ export default {
         },
         abrir_entregadores () {
             this.$router.push({ name: 'entregadores' })
+            this.toogle_menu()
+        },
+        abrir_banners() {
+            this.$router.push({ name: 'banners' })
             this.toogle_menu()
         }
 
