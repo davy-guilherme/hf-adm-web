@@ -32,6 +32,8 @@
 
                 <button class="f-button">Adicionar</button>
                 <button type="button" @click="toogle_modal()" class="f-button btn-cancelar">Cancelar</button>
+
+                <div class="margem-final"></div>
             </form>
         </div>
     </div>
@@ -169,6 +171,13 @@ export default {
 
 .os-checks {
     margin-top: 1em;
+}
+
+
+.margem-final {
+    width: 100%;
+    height: 20vh;
+
 }
 
 @media (max-width: 1199.98px) {

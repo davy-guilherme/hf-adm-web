@@ -10,7 +10,7 @@
                     Início
                     <i class="fas fa-home"></i>
                 </li>
-                <li>
+                <li @click="abrir_produtos()">
                     Produtos
                     <i class="fas fa-lemon"></i>
                 </li>
@@ -85,6 +85,10 @@ export default {
         },
         abrir_banners() {
             this.$router.push({ name: 'banners' })
+            this.toogle_menu()
+        },
+        abrir_produtos() {
+            this.$router.push({ name: 'produtos' })
             this.toogle_menu()
         }
 

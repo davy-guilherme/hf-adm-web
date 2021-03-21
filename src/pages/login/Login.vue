@@ -3,10 +3,10 @@
         <form @submit.prevent="fazerLogin()" id="box-login">
             <h1>Acesso</h1>
             <label for="email">E-mail:</label>
-            <input required type="email" v-model="email" />
+            <input required type="email" id="email" v-model="email" />
 
             <label for="senha">Senha:</label>
-            <input required type="password" v-model="senha" />
+            <input required type="password" id="senha" v-model="senha" />
             <button :disabled="loading">
                 <template v-if="loading">
                     Entrando
@@ -122,7 +122,7 @@ input {
     border-radius: 0.3em;
     border: none;
     padding: 1%;
-
+    margin-top: 0.4em;
 }
 
 button {
@@ -149,15 +149,27 @@ button {
 @media (max-width: 767.98px) {
 
 #box-login {
-    width: 65%;
+    width: 100%;
+    border-radius: 0;
+    padding: 1.5em 10%;
+}
+
+label {
+    margin-top: 1em;
+}
+
+button {
+    margin-top: 1.2em;
+
 }
 
 }
 
 @media (max-width: 575.98px) {
 
+
 #box-login {
-    width: 80%;
+    padding: 1.5em 6%;
 }
 
 }

@@ -38,6 +38,8 @@
 
                 <button class="f-button">Adicionar</button>
                 <button type="button" @click="toogle_modal()" class="f-button btn-cancelar">Cancelar</button>
+
+                <div class="margem-final"></div>
             </form>
         </div>
     </div>
@@ -63,7 +65,8 @@ export default {
 
             if (arquivo) {
                 const split = arquivo.name.split('.')
-                return `${split[0]}-${new Date().getTime()}.${split[1]}`
+                var tamanho = split.length
+                return `${split[0]}-${new Date().getTime()}.${split[tamanho-1]}`
             } else {
                 return ''
             }
@@ -207,6 +210,12 @@ export default {
 
 .os-checks {
     margin-top: 1em;
+}
+
+.margem-final {
+    width: 100%;
+    height: 20vh;
+
 }
 
 @media (max-width: 1199.98px) {
