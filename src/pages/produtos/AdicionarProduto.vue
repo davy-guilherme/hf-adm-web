@@ -8,7 +8,7 @@
                 <i class="far fa-times-circle" id="fechar-modal" @click="toogle_modal()"></i>
                 <h1>Produto</h1>
                 <label class="f-label" for="email">Nome:</label>
-                <input class="f-input" required type="text" v-model="$v.formulario.nome.$model" />
+                <input class="f-input" type="text" v-model="formulario.nome" @change="$v.formulario.nome.$touch()" />
                 <p class="f-erro" v-if="$v.formulario.nome.$error">Este campo é obrigatório</p>
 
                 <label class="f-label" for="categoria">Categoria:</label>
@@ -48,7 +48,7 @@
                         </div>
 
                         <div>
-                            <label>Preço</label><input type="text" v-model="$v.formulario.precos.pf.varejo.precoAntigo.$model" @blur="calcularPfVarejo()" />
+                            <label>Preço</label><input type="text" v-model="formulario.precos.pf.varejo.precoAntigo" @change="$v.formulario.precos.pf.varejo.precoAntigo.$touch()" @blur="calcularPfVarejo()" />
                             <p class="f-erro" v-if="$v.formulario.precos.pf.varejo.precoAntigo.$error">Este campo é obrigatório</p>
                         </div>
 
@@ -57,7 +57,7 @@
                         </div>
 
                         <div>
-                            <label>Preço F</label><input type="text" disabled v-model="formulario.precos.pf.varejo.precoAtual" />
+                            <label>Preço F</label><input type="text" disabled v-model="pfVarejoAtual" />
                         </div>
 
                         <div>
@@ -90,7 +90,7 @@
                         </div>
 
                         <div>
-                            <label>Preço</label><input type="text" v-model="$v.formulario.precos.pf.atacado.precoAntigo.$model" @blur="calcularPfAtacado()" />
+                            <label>Preço</label><input type="text" v-model="formulario.precos.pf.atacado.precoAntigo" @change="$v.formulario.precos.pf.atacado.precoAntigo.touch()" @blur="calcularPfAtacado()" />
                             <p class="f-erro" v-if="$v.formulario.precos.pf.atacado.precoAntigo.$error">Este campo é obrigatório</p>
                         </div>
 
@@ -140,7 +140,7 @@
                         </div>
 
                         <div>
-                            <label>Preço</label><input type="text" v-model="$v.formulario.precos.pj.varejo.precoAntigo.$model" @blur="calcularPjVarejo()" />
+                            <label>Preço</label><input type="text" v-model="formulario.precos.pj.varejo.precoAntigo" @change="$v.formulario.precos.pj.varejo.precoAntigo.$touch()" @blur="calcularPjVarejo()" />
                             <p class="f-erro" v-if="$v.formulario.precos.pj.varejo.precoAntigo.$error">Este campo é obrigatório</p>
                         </div>
 
@@ -182,7 +182,7 @@
                         </div>
 
                         <div>
-                            <label>Preço</label><input type="text" v-model="$v.formulario.precos.pj.atacado.precoAntigo.$model" @blur="calcularPjAtacado()" />
+                            <label>Preço</label><input type="text" v-model="formulario.precos.pj.atacado.precoAntigo" @change="$v.formulario.precos.pj.atacado.precoAntigo.touch()" @blur="calcularPjAtacado()" />
                             <p class="f-erro" v-if="$v.formulario.precos.pj.atacado.precoAntigo.$error">Este campo é obrigatório</p>
                         </div>
 
@@ -326,6 +326,31 @@ export default {
             } else {
                 return ''
             }
+        },
+        pfVarejoAnterior() {
+
+            return this.formulario.precos.pf.varejo.precoAntigo
+        },
+        pfVarejoDesconto () {
+            return this.formulario.precos.pf.varejo.desconto
+        },
+        pfVarejoAtual () {
+            var valor = this.formulario.precos.pf.varejo.precoAtual
+            valor = parseFloat(valor).toFixed(2)
+            if (valor >= 0) {
+                valor = valor.toString()
+                return valor.replace('.', ',')
+            } else { return '0,00' }
+        }
+
+    },
+    watch: {
+        pfVarejoAnterior () {
+            this.formulario.precos.pf.varejo.precoAntigo = this.formulario.precos.pf.varejo.precoAntigo.replace(/\D+/g, '')
+            .replace(/(\d*)(\d{2})/g, '$1,$2')
+        },
+        pfVarejoDesconto () {
+            this.formulario.precos.pf.varejo.desconto = this.formulario.precos.pf.varejo.desconto.replace(/\D+/g, '')
         }
     },
     methods: {
@@ -337,103 +362,107 @@ export default {
             this.formulario.arquivo = ev.target.files[0]
         },
         async submit () {
-            this.$root.$emit('Spinner::show')
-            let url = ''
 
-            try {
-                const referencia = this.$firebase.database().ref('produtos')
-                const id = referencia.push().key
+            if (!this.$v.$invalid) {
+                this.$root.$emit('Spinner::show')
+                let url = ''
 
-                //subir arquivo
-                if (this.formulario.arquivo) {
-                    const snapshot = await this.$firebase.storage()
-                        .ref(window.uid)
-                        .child(this.fileName)
-                        .put(this.formulario.arquivo)
+                try {
+                    const referencia = this.$firebase.database().ref('produtos')
+                    const id = referencia.push().key
 
-                    url = await snapshot.ref.getDownloadURL()
-                }
+                    //subir arquivo
+                    if (this.formulario.arquivo) {
+                        const snapshot = await this.$firebase.storage()
+                            .ref(window.uid)
+                            .child(this.fileName)
+                            .put(this.formulario.arquivo)
 
-                const payload = {
-                    id : id,
-                    nome: this.formulario.nome,
-                    categoria: this.formulario.categoria,
-                    precos : {
-                        pj: {
-                            varejo: {
-                                tipo: this.formulario.precos.pj.varejo.tipo,
-                                complemento : this.formulario.precos.pj.varejo.complemento,
-                                precoAntigo: this.formulario.precos.pj.varejo.precoAntigo,
-                                desconto: this.formulario.precos.pj.varejo.desconto,
-                                precoAtual : this.formulario.precos.pj.varejo.precoAtual,
-                                limitePorCliente: this.formulario.precos.pj.varejo.limitePorCliente
+                        url = await snapshot.ref.getDownloadURL()
+                    }
+
+                    const payload = {
+                        id : id,
+                        nome: this.formulario.nome,
+                        categoria: this.formulario.categoria,
+                        precos : {
+                            pj: {
+                                varejo: {
+                                    tipo: this.formulario.precos.pj.varejo.tipo,
+                                    complemento : this.formulario.precos.pj.varejo.complemento,
+                                    precoAntigo: this.formulario.precos.pj.varejo.precoAntigo,
+                                    desconto: this.formulario.precos.pj.varejo.desconto,
+                                    precoAtual : this.formulario.precos.pj.varejo.precoAtual,
+                                    limitePorCliente: this.formulario.precos.pj.varejo.limitePorCliente
+                                },
+                                atacado: {
+                                    tipo: this.formulario.precos.pj.atacado.tipo,
+                                    complemento : this.formulario.precos.pj.atacado.complemento,
+                                    precoAntigo: this.formulario.precos.pj.atacado.precoAntigo,
+                                    desconto: this.formulario.precos.pj.atacado.desconto,
+                                    precoAtual : this.formulario.precos.pj.atacado.precoAtual,
+                                    limitePorCliente: this.formulario.precos.pj.atacado.limitePorCliente
+                                }
                             },
-                            atacado: {
-                                tipo: this.formulario.precos.pj.atacado.tipo,
-                                complemento : this.formulario.precos.pj.atacado.complemento,
-                                precoAntigo: this.formulario.precos.pj.atacado.precoAntigo,
-                                desconto: this.formulario.precos.pj.atacado.desconto,
-                                precoAtual : this.formulario.precos.pj.atacado.precoAtual,
-                                limitePorCliente: this.formulario.precos.pj.atacado.limitePorCliente
+                            pf : {
+                                varejo: {
+                                    tipo: this.formulario.precos.pf.varejo.tipo,
+                                    complemento : this.formulario.precos.pf.varejo.complemento,
+                                    precoAntigo: this.formulario.precos.pf.varejo.precoAntigo,
+                                    desconto: this.formulario.precos.pf.varejo.desconto,
+                                    precoAtual : this.formulario.precos.pf.varejo.precoAtual,
+                                    limitePorCliente: this.formulario.precos.pf.varejo.limitePorCliente
+                                },
+                                atacado: {
+                                    tipo: this.formulario.precos.pf.atacado.tipo,
+                                    complemento : this.formulario.precos.pf.atacado.complemento,
+                                    precoAntigo: this.formulario.precos.pf.atacado.precoAntigo,
+                                    desconto: this.formulario.precos.pf.atacado.desconto,
+                                    precoAtual : this.formulario.precos.pf.atacado.precoAtual,
+                                    limitePorCliente: this.formulario.precos.pf.atacado.limitePorCliente
+                                }
                             }
                         },
-                        pf : {
-                            varejo: {
-                                tipo: this.formulario.precos.pf.varejo.tipo,
-                                complemento : this.formulario.precos.pf.varejo.complemento,
-                                precoAntigo: this.formulario.precos.pf.varejo.precoAntigo,
-                                desconto: this.formulario.precos.pf.varejo.desconto,
-                                precoAtual : this.formulario.precos.pf.varejo.precoAtual,
-                                limitePorCliente: this.formulario.precos.pf.varejo.limitePorCliente
-                            },
-                            atacado: {
-                                tipo: this.formulario.precos.pf.atacado.tipo,
-                                complemento : this.formulario.precos.pf.atacado.complemento,
-                                precoAntigo: this.formulario.precos.pf.atacado.precoAntigo,
-                                desconto: this.formulario.precos.pf.atacado.desconto,
-                                precoAtual : this.formulario.precos.pf.atacado.precoAtual,
-                                limitePorCliente: this.formulario.precos.pf.atacado.limitePorCliente
-                            }
-                        }
-                    },
-                    posicao: this.formulario.posicao,
-                    visibilidade: this.formulario.visibilidade,
-                    arquivo: url,
-                    criadoEm : new Date().getTime()
+                        posicao: this.formulario.posicao,
+                        visibilidade: this.formulario.visibilidade,
+                        arquivo: url,
+                        criadoEm : new Date().getTime()
 
 
-                }
-
-                referencia.child(id).set(payload, err => {
-                    if (err) {
-                        //chamar a notificacao
-                        this.$root.$emit('Notification::show', {
-                            type: 'n-erro',
-                            message: 'Não foi possível cadastrar o novo produto. Por favor, tente novamente.'
-                        })
-                    } else {
-                        this.$root.$emit('Notification::show', {
-                            type: 'n-sucesso',
-                            message: 'O novo produto foi cadastrado com sucesso.'
-                        })
-                        this.toogle_modal()
                     }
-                })
-            } catch (err) {
-                console.error(err)
-            } finally {
-                this.$root.$emit('Spinner::hide')
+
+                    referencia.child(id).set(payload, err => {
+                        if (err) {
+                            //chamar a notificacao
+                            this.$root.$emit('Notification::show', {
+                                type: 'n-erro',
+                                message: 'Não foi possível cadastrar o novo produto. Por favor, tente novamente.'
+                            })
+                        } else {
+                            this.$root.$emit('Notification::show', {
+                                type: 'n-sucesso',
+                                message: 'O novo produto foi cadastrado com sucesso.'
+                            })
+                            this.toogle_modal()
+                        }
+                    })
+                } catch (err) {
+                    console.error(err)
+                } finally {
+                    this.$root.$emit('Spinner::hide')
+                }
+                //console.log('enviou')
+                //colocar o firebase em jogo! (soh na funcao, talvez???)
+                //const referencia = this.$firebase.database().ref('entregadores/' + window.uid) // acessa o id de usuario que ja existe OU cria um novo
+
+
+            } else {
+                this.$v.$touch()
             }
-            //console.log('enviou')
-            //colocar o firebase em jogo! (soh na funcao, talvez???)
-            //const referencia = this.$firebase.database().ref('entregadores/' + window.uid) // acessa o id de usuario que ja existe OU cria um novo
-
-
-
 
         },
         calcularPfVarejo () {
-            this.formulario.precos.pf.varejo.precoAtual = this.formulario.precos.pf.varejo.precoAntigo - ( this.formulario.precos.pf.varejo.precoAntigo * (this.formulario.precos.pf.varejo.desconto / 100))
+            this.formulario.precos.pf.varejo.precoAtual = this.formulario.precos.pf.varejo.precoAntigo.replace(',', '.') - ( this.formulario.precos.pf.varejo.precoAntigo.replace(',', '.') * (this.formulario.precos.pf.varejo.desconto / 100))
         },
 
         calcularPfAtacado () {

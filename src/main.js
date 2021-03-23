@@ -8,6 +8,10 @@ import Vuelidate from 'vuelidate'
 import FirebaseVue from './firebase'
 import './assets/scss/app.scss'
 
+import './utils/directives'
+
+
+
 Vue.use(VueMeta)
 Vue.use(Vuelidate)
 
