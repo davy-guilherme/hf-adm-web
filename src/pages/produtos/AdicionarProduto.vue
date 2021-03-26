@@ -99,7 +99,7 @@
                         </div>
 
                         <div>
-                            <label>Preço F</label><input type="text" disabled v-model="formulario.precos.pf.atacado.precoAtual" />
+                            <label>Preço F</label><input type="text" disabled v-model="pfAtacadoAtual" />
                         </div>
 
                         <div>
@@ -149,7 +149,7 @@
                         </div>
 
                         <div>
-                            <label>Preço F</label><input type="text" disabled v-model="formulario.precos.pj.varejo.precoAtual" />
+                            <label>Preço F</label><input type="text" disabled v-model="pjVarejoAtual" />
                         </div>
 
                         <div>
@@ -191,7 +191,7 @@
                         </div>
 
                         <div>
-                            <label>Preço F</label><input type="text" disabled v-model="formulario.precos.pj.atacado.precoAtual" />
+                            <label>Preço F</label><input type="text" disabled v-model="pjAtacadoAtual" />
                         </div>
 
                         <div>
@@ -206,13 +206,22 @@
                 <!-- fim -->
 
 
-                <label class="f-label" for="cpf">Imagem:</label>
+                <!--<label class="f-label" for="cpf">Imagem:</label>
                 <input class="f-input" required type="file" accept="image/*" @change="handleFile($event)"/>
 
                 <div v-if="formulario.arquivo">
                     {{formulario.arquivo.name}}
                     <button type="button" @click="formulario.arquivo = ''"><i class="fa fa-trash"></i></button>
+                </div>-->
+
+                <label class="f-label" for="cpf">Imagem:</label>
+                <input class="f-input" type="file" id="input-imagem" ref="inputImagem" accept="image/*" @change="handleFile($event)"/>
+                <button type="button" @click="openFileDialog()">Escolher imagem</button>
+                <div v-if="formulario.arquivo">
+                    {{formulario.arquivo.name}}
+                    <button type="button" @click="remover_imagem()"><i class="fa fa-trash"></i></button>
                 </div>
+                <p class="f-erro" v-if="$v.formulario.arquivo.$error">Este campo é obrigatório</p>
 
 
                 <div class="os-checks">
@@ -249,24 +258,6 @@ export default {
             nome: '',
             categoria: '',
             precos: {
-                pj: {
-                    varejo: {
-                        tipo : '',
-                        complemento: '',
-                        precoAntigo: '',
-                        desconto: '',
-                        precoAtual: '',
-                        limitePorCliente: ''
-                    },
-                    atacado: {
-                        tipo : '',
-                        complemento: '',
-                        precoAntigo: '',
-                        desconto: '',
-                        precoAtual: '',
-                        limitePorCliente: ''
-                    }
-                },
                 pf: {
                     varejo: {
                         tipo : '',
@@ -285,6 +276,24 @@ export default {
                         limitePorCliente: ''
                     }
                 },
+                pj: {
+                    varejo: {
+                        tipo : '',
+                        complemento: '',
+                        precoAntigo: '',
+                        desconto: '',
+                        precoAtual: '',
+                        limitePorCliente: ''
+                    },
+                    atacado: {
+                        tipo : '',
+                        complemento: '',
+                        precoAntigo: '',
+                        desconto: '',
+                        precoAtual: '',
+                        limitePorCliente: ''
+                    }
+                }
 
             },
             posicao: '',
@@ -312,7 +321,8 @@ export default {
                         precoAntigo : { required }
                     }
                 }
-            }
+            },
+            arquivo: { required },
         }
     },
     computed : {
@@ -327,6 +337,7 @@ export default {
                 return ''
             }
         },
+        //PJ - VAREJO
         pfVarejoAnterior() {
 
             return this.formulario.precos.pf.varejo.precoAntigo
@@ -341,21 +352,106 @@ export default {
                 valor = valor.toString()
                 return valor.replace('.', ',')
             } else { return '0,00' }
-        }
+        },
+
+        //PF - ATACADO
+        pfAtacadoAnterior() {
+
+            return this.formulario.precos.pf.atacado.precoAntigo
+        },
+        pfAtacadoDesconto () {
+            return this.formulario.precos.pf.atacado.desconto
+        },
+        pfAtacadoAtual () {
+            var valor = this.formulario.precos.pf.atacado.precoAtual
+            valor = parseFloat(valor).toFixed(2)
+            if (valor >= 0) {
+                valor = valor.toString()
+                return valor.replace('.', ',')
+            } else { return '0,00' }
+        },
+
+        //PJ - VAREJO
+        pjVarejoAnterior() {
+
+            return this.formulario.precos.pj.varejo.precoAntigo
+        },
+        pjVarejoDesconto () {
+            return this.formulario.precos.pj.varejo.desconto
+        },
+        pjVarejoAtual () {
+            var valor = this.formulario.precos.pj.varejo.precoAtual
+            valor = parseFloat(valor).toFixed(2)
+            if (valor >= 0) {
+                valor = valor.toString()
+                return valor.replace('.', ',')
+            } else { return '0,00' }
+        },
+
+        //PJ - VAREJO
+        pjAtacadoAnterior() {
+
+            return this.formulario.precos.pj.atacado.precoAntigo
+        },
+        pjAtacadoDesconto () {
+            return this.formulario.precos.pj.atacado.desconto
+        },
+        pjAtacadoAtual () {
+            var valor = this.formulario.precos.pj.atacado.precoAtual
+            valor = parseFloat(valor).toFixed(2)
+            if (valor >= 0) {
+                valor = valor.toString()
+                return valor.replace('.', ',')
+            } else { return '0,00' }
+        },
+
+
 
     },
     watch: {
+        //PF - VAREJO
         pfVarejoAnterior () {
             this.formulario.precos.pf.varejo.precoAntigo = this.formulario.precos.pf.varejo.precoAntigo.replace(/\D+/g, '')
             .replace(/(\d*)(\d{2})/g, '$1,$2')
         },
         pfVarejoDesconto () {
             this.formulario.precos.pf.varejo.desconto = this.formulario.precos.pf.varejo.desconto.replace(/\D+/g, '')
+        },
+
+        //PF - Atacado
+        pfAtacadoAnterior () {
+            this.formulario.precos.pf.atacado.precoAntigo = this.formulario.precos.pf.atacado.precoAntigo.replace(/\D+/g, '')
+            .replace(/(\d*)(\d{2})/g, '$1,$2')
+        },
+        pfAtacadoDesconto () {
+            this.formulario.precos.pf.atacado.desconto = this.formulario.precos.pf.atacado.desconto.replace(/\D+/g, '')
+        },
+
+        //PJ - VAREJO
+        pjVarejoAnterior () {
+            this.formulario.precos.pj.varejo.precoAntigo = this.formulario.precos.pj.varejo.precoAntigo.replace(/\D+/g, '')
+            .replace(/(\d*)(\d{2})/g, '$1,$2')
+        },
+        pjVarejoDesconto () {
+            this.formulario.precos.pj.varejo.desconto = this.formulario.precos.pj.varejo.desconto.replace(/\D+/g, '')
+        },
+
+        //PJ - ATACADO
+        pjAtacadoAnterior () {
+            this.formulario.precos.pj.atacado.precoAntigo = this.formulario.precos.pj.atacado.precoAntigo.replace(/\D+/g, '')
+            .replace(/(\d*)(\d{2})/g, '$1,$2')
+        },
+        pjAtacadoDesconto () {
+            this.formulario.precos.pj.atacado.desconto = this.formulario.precos.pj.atacado.desconto.replace(/\D+/g, '')
         }
+
     },
     methods: {
         toogle_modal() {
             this.showModal = !this.showModal
+        },
+        apagar_dados () {
+            console.log('apagou')
         },
         handleFile(ev) {
             //console.log(ev)
@@ -386,29 +482,11 @@ export default {
                         nome: this.formulario.nome,
                         categoria: this.formulario.categoria,
                         precos : {
-                            pj: {
-                                varejo: {
-                                    tipo: this.formulario.precos.pj.varejo.tipo,
-                                    complemento : this.formulario.precos.pj.varejo.complemento,
-                                    precoAntigo: this.formulario.precos.pj.varejo.precoAntigo,
-                                    desconto: this.formulario.precos.pj.varejo.desconto,
-                                    precoAtual : this.formulario.precos.pj.varejo.precoAtual,
-                                    limitePorCliente: this.formulario.precos.pj.varejo.limitePorCliente
-                                },
-                                atacado: {
-                                    tipo: this.formulario.precos.pj.atacado.tipo,
-                                    complemento : this.formulario.precos.pj.atacado.complemento,
-                                    precoAntigo: this.formulario.precos.pj.atacado.precoAntigo,
-                                    desconto: this.formulario.precos.pj.atacado.desconto,
-                                    precoAtual : this.formulario.precos.pj.atacado.precoAtual,
-                                    limitePorCliente: this.formulario.precos.pj.atacado.limitePorCliente
-                                }
-                            },
                             pf : {
                                 varejo: {
                                     tipo: this.formulario.precos.pf.varejo.tipo,
                                     complemento : this.formulario.precos.pf.varejo.complemento,
-                                    precoAntigo: this.formulario.precos.pf.varejo.precoAntigo,
+                                    precoAntigo: this.formulario.precos.pf.varejo.precoAntigo.replace(',','.'),
                                     desconto: this.formulario.precos.pf.varejo.desconto,
                                     precoAtual : this.formulario.precos.pf.varejo.precoAtual,
                                     limitePorCliente: this.formulario.precos.pf.varejo.limitePorCliente
@@ -416,10 +494,28 @@ export default {
                                 atacado: {
                                     tipo: this.formulario.precos.pf.atacado.tipo,
                                     complemento : this.formulario.precos.pf.atacado.complemento,
-                                    precoAntigo: this.formulario.precos.pf.atacado.precoAntigo,
+                                    precoAntigo: this.formulario.precos.pf.atacado.precoAntigo.replace(',', '.'),
                                     desconto: this.formulario.precos.pf.atacado.desconto,
                                     precoAtual : this.formulario.precos.pf.atacado.precoAtual,
                                     limitePorCliente: this.formulario.precos.pf.atacado.limitePorCliente
+                                }
+                            },
+                            pj: {
+                                varejo: {
+                                    tipo: this.formulario.precos.pj.varejo.tipo,
+                                    complemento : this.formulario.precos.pj.varejo.complemento,
+                                    precoAntigo: this.formulario.precos.pj.varejo.precoAntigo.replace(',', '.'),
+                                    desconto: this.formulario.precos.pj.varejo.desconto,
+                                    precoAtual : this.formulario.precos.pj.varejo.precoAtual,
+                                    limitePorCliente: this.formulario.precos.pj.varejo.limitePorCliente
+                                },
+                                atacado: {
+                                    tipo: this.formulario.precos.pj.atacado.tipo,
+                                    complemento : this.formulario.precos.pj.atacado.complemento,
+                                    precoAntigo: this.formulario.precos.pj.atacado.precoAntigo.replace(',', '.'),
+                                    desconto: this.formulario.precos.pj.atacado.desconto,
+                                    precoAtual : this.formulario.precos.pj.atacado.precoAtual,
+                                    limitePorCliente: this.formulario.precos.pj.atacado.limitePorCliente
                                 }
                             }
                         },
@@ -443,6 +539,9 @@ export default {
                                 type: 'n-sucesso',
                                 message: 'O novo produto foi cadastrado com sucesso.'
                             })
+
+                            this.apagar_dados();
+
                             this.toogle_modal()
                         }
                     })
@@ -460,19 +559,26 @@ export default {
                 this.$v.$touch()
             }
 
+
+        },
+        openFileDialog() {
+            this.$refs.inputImagem.click()
+        },
+        remover_imagem() {
+            this.formulario.arquivo = ''
         },
         calcularPfVarejo () {
             this.formulario.precos.pf.varejo.precoAtual = this.formulario.precos.pf.varejo.precoAntigo.replace(',', '.') - ( this.formulario.precos.pf.varejo.precoAntigo.replace(',', '.') * (this.formulario.precos.pf.varejo.desconto / 100))
         },
 
         calcularPfAtacado () {
-            this.formulario.precos.pf.atacado.precoAtual = this.formulario.precos.pf.atacado.precoAntigo - ( this.formulario.precos.pf.atacado.precoAntigo * (this.formulario.precos.pf.atacado.desconto / 100))
+            this.formulario.precos.pf.atacado.precoAtual = this.formulario.precos.pf.atacado.precoAntigo.replace(',', '.') - ( this.formulario.precos.pf.atacado.precoAntigo.replace(',', '.') * (this.formulario.precos.pf.atacado.desconto / 100))
         },
         calcularPjVarejo () {
-            this.formulario.precos.pj.varejo.precoAtual = this.formulario.precos.pj.varejo.precoAntigo - ( this.formulario.precos.pj.varejo.precoAntigo * (this.formulario.precos.pj.varejo.desconto / 100))
+            this.formulario.precos.pj.varejo.precoAtual = this.formulario.precos.pj.varejo.precoAntigo.replace(',', '.') - ( this.formulario.precos.pj.varejo.precoAntigo.replace(',', '.') * (this.formulario.precos.pj.varejo.desconto / 100))
         },
         calcularPjAtacado () {
-            this.formulario.precos.pj.atacado.precoAtual = this.formulario.precos.pj.atacado.precoAntigo - ( this.formulario.precos.pj.atacado.precoAntigo * (this.formulario.precos.pj.atacado.desconto / 100))
+            this.formulario.precos.pj.atacado.precoAtual = this.formulario.precos.pj.atacado.precoAntigo.replace(',', '.') - ( this.formulario.precos.pj.atacado.precoAntigo.replace(',', '.') * (this.formulario.precos.pj.atacado.desconto / 100))
         }
 
     }
@@ -481,6 +587,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+#input-imagem {
+    display: none;
+}
+
 
 .btn-add {
     margin:0 auto !important;
@@ -595,7 +706,7 @@ export default {
     color: red;
     font-size: 0.9em;
     padding: 0.3em 0;
-    text-align: right;
+    text-align: left;
     width: 100%;
 }
 

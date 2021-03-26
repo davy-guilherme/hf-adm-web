@@ -5,24 +5,29 @@
         <div class="adicionar-fundo" :class="{ ativo : showModal }">
             <form @submit.prevent="submit()" class="box-adicionar">
                 <i class="far fa-times-circle" id="fechar-modal" @click="toogle_modal()"></i>
-                <h1>Banner</h1>
-                <label class="f-label" for="email">Nome:</label>
-                <input class="f-input" required type="text" v-model="formulario.nome" />
+                <h1>Novo Banner</h1>
+                <label class="f-label" for="nome">Nome:</label>
+                <input class="f-input" type="text" v-model="formulario.nome" @change="$v.formulario.nome.$touch()" />
+                <p class="f-erro" v-if="$v.formulario.nome.$error">Este campo é obrigatório</p>
 
                 <label class="f-label" for="cpf">Descrição da imagem:</label>
 
-                <textarea class="f-input" rows="3" v-model="formulario.descricao">
+                <textarea class="f-input" rows="3" v-model="formulario.descricao" @change="$v.formulario.descricao.$touch()">
 
                 </textarea>
+                <p class="f-erro" v-if="$v.formulario.descricao.$error">Este campo é obrigatório</p>
 
                 <label class="f-label" for="cpf">Imagem:</label>
-                <input class="f-input" required type="file" accept="image/*" @change="handleFile($event)"/>
+                <input class="f-input" type="file" id="input-imagem" ref="inputImagem" accept="image/*" @change="handleFile($event)"/>
+                <button type="button" @click="openFileDialog()">Escolher imagem</button>
+                <div v-if="formulario.arquivo">
+                    {{formulario.arquivo.name}}
+                    <button type="button" @click="remover_imagem()"><i class="fa fa-trash"></i></button>
+                </div>
+                <p class="f-erro" v-if="$v.formulario.arquivo.$error">Este campo é obrigatório</p>
 
                 <label class="f-label" for="cpf">Link:</label>
-                <input class="f-input" required type="text" v-model="formulario.link" />
-
-                <label class="f-label" for="telefone">Posiçao</label>
-                <input class="f-input" required type="text" v-model="formulario.posicao" />
+                <input class="f-input" type="text" v-model="formulario.link" />
 
 
                 <div class="os-checks">
@@ -31,10 +36,6 @@
                     <label class="l" for="pedestre"> Ativo</label><br>
                 </div>
 
-                <div v-if="formulario.arquivo">
-                    {{formulario.arquivo.name}}
-                    <button type="button" @click="formulario.arquivo = ''"><i class="fa fa-trash"></i></button>
-                </div>
 
                 <button class="f-button">Adicionar</button>
                 <button type="button" @click="toogle_modal()" class="f-button btn-cancelar">Cancelar</button>
@@ -46,6 +47,8 @@
 </template>
 
 <script>
+import { required } from 'vuelidate/lib/validators'
+
 export default {
     name : 'AdicionarBanner',
     data: () => ({
@@ -54,11 +57,19 @@ export default {
             nome: '',
             descricao: '',
             link: '',
-            posicao: '',
             visibilidade: false,
-            arquivo: ''
+            arquivo: '',
+            posicao: ''
         }
     }),
+    validations : {
+        formulario: {
+            nome : { required },
+            descricao : { required },
+            arquivo: { required },
+
+        }
+    },
     computed : {
         fileName () {
             const {arquivo} = this.formulario
@@ -71,6 +82,7 @@ export default {
                 return ''
             }
         }
+
     },
     methods: {
         toogle_modal() {
@@ -79,70 +91,84 @@ export default {
         handleFile(ev) {
             //console.log(ev)
             this.formulario.arquivo = ev.target.files[0]
+            this.$v.formulario.arquivo.$touch()
         },
         async submit () {
-            this.$root.$emit('Spinner::show')
-            let url = ''
+            if (!this.$v.$invalid) {
+                this.$root.$emit('Spinner::show')
+                let url = ''
 
-            try {
-                const referencia = this.$firebase.database().ref('banners')
-                const id = referencia.push().key
+                try {
+                    const referencia = this.$firebase.database().ref('banners')
+                    const id = referencia.push().key
 
-                //subir arquivo
-                if (this.formulario.arquivo) {
-                    const snapshot = await this.$firebase.storage()
-                        .ref(window.uid)
-                        .child(this.fileName)
-                        .put(this.formulario.arquivo)
+                    //subir arquivo
+                    if (this.formulario.arquivo) {
+                        const snapshot = await this.$firebase.storage()
+                            .ref(window.uid)
+                            .child(this.fileName)
+                            .put(this.formulario.arquivo)
 
-                    url = await snapshot.ref.getDownloadURL()
-                }
-
-                const payload = {
-                    id : id,
-                    nome: this.formulario.nome,
-                    descricao: this.formulario.descricao,
-                    link: this.formulario.link,
-                    posicao: this.formulario.posicao,
-                    visibilidade: this.formulario.visibilidade,
-                    arquivo: url,
-                    criadoEm : new Date().getTime()
-                }
-
-                referencia.child(id).set(payload, err => {
-                    if (err) {
-                        //chamar a notificacao
-                        this.$root.$emit('Notification::show', {
-                            type: 'n-erro',
-                            message: 'Não foi possível cadastrar o novo entregador. Por favor, tente novamente.'
-                        })
-                    } else {
-                        this.$root.$emit('Notification::show', {
-                            type: 'n-sucesso',
-                            message: 'O novo entregador foi cadastrado com sucesso.'
-                        })
-                        this.toogle_modal()
+                        url = await snapshot.ref.getDownloadURL()
                     }
-                })
-            } catch (err) {
-                console.error(err)
-            } finally {
-                this.$root.$emit('Spinner::hide')
+
+                    const payload = {
+                        id : id,
+                        nome: this.formulario.nome,
+                        descricao: this.formulario.descricao,
+                        link: this.formulario.link,
+                        posicao: this.formulario.posicao,
+                        visibilidade: this.formulario.visibilidade,
+                        arquivo: url,
+                        criadoEm : new Date().getTime()
+                    }
+
+                    referencia.child(id).set(payload, err => {
+                        if (err) {
+                            //chamar a notificacao
+                            this.$root.$emit('Notification::show', {
+                                type: 'n-erro',
+                                message: 'Não foi possível cadastrar o novo banner. Por favor, tente novamente.'
+                            })
+                        } else {
+                            this.$root.$emit('Notification::show', {
+                                type: 'n-sucesso',
+                                message: 'O novo banner foi cadastrado com sucesso.'
+                            })
+                            this.toogle_modal()
+                        }
+                    })
+                } catch (err) {
+                    console.error(err)
+                } finally {
+                    this.$root.$emit('Spinner::hide')
+                }
+                //console.log('enviou')
+                //colocar o firebase em jogo! (soh na funcao, talvez???)
+                //const referencia = this.$firebase.database().ref('entregadores/' + window.uid) // acessa o id de usuario que ja existe OU cria um novo
+
+            } else {
+                this.$v.$touch()
             }
-            //console.log('enviou')
-            //colocar o firebase em jogo! (soh na funcao, talvez???)
-            //const referencia = this.$firebase.database().ref('entregadores/' + window.uid) // acessa o id de usuario que ja existe OU cria um novo
-
-
-
-
+        },
+        openFileDialog() {
+            this.$refs.inputImagem.click()
+        },
+        remover_imagem() {
+            this.formulario.arquivo = ''
         }
+
     }
+
 
 }
 </script>
 
 <style scoped lang="scss">
+
+#input-imagem {
+    display: none;
+}
 
 .btn-add {
     margin:0 auto !important;
@@ -216,6 +242,15 @@ export default {
     width: 100%;
     height: 20vh;
 
+}
+
+.f-erro {
+    color: red;
+    font-size: 0.9em;
+    padding: 0.3em 0;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 0.5em;
 }
 
 @media (max-width: 1199.98px) {

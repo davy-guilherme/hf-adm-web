@@ -4,9 +4,14 @@
         <adicionar-banner />
         <div class="banners">
           <div class="banner" v-for="banner in banners" :key="banner.id">
-              <img :src="banner.arquivo" />
+              <div class="banner-img">
+                <img :src="banner.arquivo" />
+              </div>
+              <div class="banner-txt">
+                <p class="banner-titulo">{{ banner.nome }}</p>
+                <button type="button" class="btn-editar" @click="ver_banner(banner.id)">Editar</button>
+              </div>
 
-            <i class="far fa-eye ver" @click="ver_banner(banner.id)"></i>
           </div>
         </div>
     </div>
@@ -68,22 +73,39 @@ h1 {
   padding: 0.5em;
   border-radius: 0.5em;
   position: relative;
-  height: auto;
+  width: 100%;
+  display: table;
+}
+
+.banner-img {
+  width: 49%;
+  position: relative;
+  float: left;
 }
 
 img {
-  width: 90%;
+  width: 100%;
+  z-index: 2;
 }
 
-.ver {
-  position: absolute;
-  right: 2%;
-  top: 27%;
-  font-size: 2.1em;
-  cursor: pointer;
-  color: white;
+.banner-txt {
+  width: 49%;
+  position: relative;
+  float: right;
+}
+
+.banner-titulo {
+  font-size: 1.9em;
+}
+
+.btn-editar {
+  padding: 0.4em 0.8em;
+  border-radius: 0.3em;
+  margin-top: 1em;
+  background-color: var(--light-medium);
+  font-size: 1.1em;
   &:hover {
-    color: var(--dark-medium);
+    background-color: var(--dark-low);
   }
 }
 

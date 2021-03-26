@@ -34,7 +34,7 @@ export default {
     bottom: 0;
     right: 0;
     left: 0;
-    position: absolute;
+    position: fixed;
     width: 100vw;
     height: 100vh;
     display: flex;

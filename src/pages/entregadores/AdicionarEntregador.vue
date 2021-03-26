@@ -5,18 +5,19 @@
         <div class="adicionar-fundo" :class="{ ativo : showModal }">
             <form @submit.prevent="submit()" class="box-adicionar">
                 <i class="far fa-times-circle" id="fechar-modal" @click="toogle_modal()"></i>
-                <h1>Entregador</h1>
+                <h1>Novo Entregador</h1>
                 <label class="f-label" for="email">Nome:</label>
-                <input class="f-input" required type="text" v-model="formulario.nome" />
+                <input class="f-input" type="text" v-model="formulario.nome" @change="$v.formulario.nome.$touch()" />
+                <p class="f-erro" v-if="$v.formulario.nome.$error">Este campo é obrigatório</p>
 
                 <label class="f-label" for="cpf">CPF:</label>
-                <input class="f-input" required type="text" v-model="formulario.cpf" />
+                <input class="f-input" type="text" v-model="formulario.cpf" />
 
                 <label class="f-label" for="cpf">Nascimento:</label>
-                <input class="f-input" required type="date" v-model="formulario.nascimento" />
+                <input class="f-input" type="date" v-model="formulario.nascimento" />
 
                 <label class="f-label" for="telefone">Telefone:</label>
-                <input class="f-input" required type="text" v-model="formulario.tel" />
+                <input class="f-input" type="text" v-model="formulario.tel" />
 
                 <div class="os-checks">
                     <p>Modalidades</p>
@@ -40,6 +41,8 @@
 </template>
 
 <script>
+import { required } from 'vuelidate/lib/validators'
+
 export default {
     name : 'AdicionarEntregador',
     data: () => ({
@@ -56,47 +59,87 @@ export default {
 
         }
     }),
+    validations : {
+        formulario: {
+            nome : { required },
+            cpf : { required },
+            nascimento : { required },
+            tel: { required },
+
+        }
+    },
+    computed: {
+        cpfMask() {
+            return this.formulario.cpf
+        },
+        telMask() {
+            return this.formulario.tel
+        }
+    },
+    watch: {
+        cpfMask () {
+           this.formulario.cpf = this.formulario.cpf.replace(/\D+/g, '')
+           .replace(/([0-9]{3})([0-9])/, '$1.$2')
+           .replace(/([0-9]{3}).([0-9]{3})([0-9])/, '$1.$2.$3')
+           .replace(/([0-9]{3}).([0-9]{3}).([0-9]{3})([0-9])/, '$1.$2.$3-$4')
+           .replace(/(-[0-9]{2})[0-9]$/, '$1')
+
+        },
+        telMask () {
+            this.formulario.tel = this.formulario.tel.replace(/\D+/g, '')
+            .replace(/([0-9]{2})([0-9])/, '($1) $2')
+            .replace(/([0-9]{4})([0-9])/, '$1-$2')
+            .replace(/([0-9]{4})-([0-9])([0-9]{4})/, '$1$2-$3')
+            .replace(/(-[0-9]{4})[0-9]$/, '$1')
+        }
+    },
     methods: {
         toogle_modal() {
             this.showModal = !this.showModal
         },
         submit () {
-            this.$root.$emit('Spinner::show')
-            //console.log('enviou')
-            //colocar o firebase em jogo! (soh na funcao, talvez???)
-            //const referencia = this.$firebase.database().ref('entregadores/' + window.uid) // acessa o id de usuario que ja existe OU cria um novo
-            const referencia = this.$firebase.database().ref('entregadores')
-            const id = referencia.push().key
-            const payload = {
-                id : id,
-                nome : this.formulario.nome,
-                cpf : this.formulario.cpf,
-                nascimento: this.formulario.nascimento,
-                tel: this.formulario.tel,
-                ape: this.formulario.ape,
-                bicicleta: this.formulario.bicicleta,
-                moto: this.formulario.moto,
-                carro: this.formulario.carro,
-                criadoEm : new Date().getTime()
-            }
+            if (!this.$v.$invalid) {
 
-            referencia.child(id).set(payload, err => {
-                if (err) {
-                    //chamar a notificacao
-                    this.$root.$emit('Notification::show', {
-                        type: 'n-erro',
-                        message: 'Não foi possível cadastrar o novo entregador. Por favor, tente novamente.'
-                    })
-                } else {
-                    this.$root.$emit('Notification::show', {
-                        type: 'n-sucesso',
-                        message: 'O novo entregador foi cadastrado com sucesso.'
-                    })
-                    this.toogle_modal()
+                this.$root.$emit('Spinner::show')
+                //console.log('enviou')
+                //colocar o firebase em jogo! (soh na funcao, talvez???)
+                //const referencia = this.$firebase.database().ref('entregadores/' + window.uid) // acessa o id de usuario que ja existe OU cria um novo
+                const referencia = this.$firebase.database().ref('entregadores')
+                const id = referencia.push().key
+                const payload = {
+                    id : id,
+                    nome : this.formulario.nome,
+                    cpf : this.formulario.cpf,
+                    nascimento: this.formulario.nascimento,
+                    tel: this.formulario.tel,
+                    ape: this.formulario.ape,
+                    bicicleta: this.formulario.bicicleta,
+                    moto: this.formulario.moto,
+                    carro: this.formulario.carro,
+                    criadoEm : new Date().getTime()
                 }
-            })
 
-            this.$root.$emit('Spinner::hide')
+                referencia.child(id).set(payload, err => {
+                    if (err) {
+                        //chamar a notificacao
+                        this.$root.$emit('Notification::show', {
+                            type: 'n-erro',
+                            message: 'Não foi possível cadastrar o novo entregador. Por favor, tente novamente.'
+                        })
+                    } else {
+                        this.$root.$emit('Notification::show', {
+                            type: 'n-sucesso',
+                            message: 'O novo entregador foi cadastrado com sucesso.'
+                        })
+                        this.toogle_modal()
+                    }
+                })
+
+                this.$root.$emit('Spinner::hide')
+
+            } else {
+                this.$v.$touch()
+            }
 
         }
     }
@@ -159,7 +202,6 @@ export default {
     border-radius: 0.3em;
     border: none;
     padding: 1%;
-
 }
 
 .f-button {
@@ -179,6 +221,16 @@ export default {
     height: 20vh;
 
 }
+
+.f-erro {
+    color: red;
+    font-size: 0.9em;
+    padding: 0.3em 0;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 0.5em;
+}
+
 
 @media (max-width: 1199.98px) {
 
