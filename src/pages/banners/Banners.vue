@@ -110,4 +110,55 @@ img {
 }
 
 
+@media (max-width: 1199.98px) {
+
+
+
+
+}
+
+@media (max-width: 991.98px) {
+
+.banner-img {
+  width: 100%;
+
+}
+
+
+.banner-txt {
+  width: 100%;
+
+}
+
+.banner-titulo {
+  font-size: 1.6em;
+}
+
+.btn-editar {
+  font-size: 1em;
+}
+
+
+}
+
+@media (max-width: 767.98px) {
+
+
+
+
+}
+
+@media (max-width: 575.98px) {
+
+.banner-titulo {
+  font-size: 1.5em;
+}
+
+.btn-editar {
+  font-size: 0.9em;
+}
+
+}
+
+
 </style>
