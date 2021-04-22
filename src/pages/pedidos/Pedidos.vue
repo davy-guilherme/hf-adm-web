@@ -1,55 +1,43 @@
 <template>
     <div>
-        <h1>Produtos</h1>
-        <adicionar-produto />
-        <div class="produtos">
-          <div class="buscar-produtos">
-            <label for="buscar">Buscar em Produtos:</label>
+        <h1>Pedidos</h1>
+        <div class="pedidos">
+          <div class="buscar-pedidos">
+            <label for="buscar">Buscar em Pedidos:</label>
             <input type="text" id="buscar" v-model="busca" @keyup="getData()" />
           </div>
 
-          <div class="produto" v-for="produto in produtos_filtrados" :key="produto.id" @click="ver_produto(produto.id)">
-
-              <div class="imagem-do-produto" :style="largura_img">
-                <img :src="produto.arquivo" />
-              </div>
+          <div class="pedidos" v-for="pedido in pedidos_filtrados" :key="pedido.id" @click="ver_pedido(pedido.id)">
 
               <div class="info">
-                <p>{{ produto.nome }} ({{ produto.precos.pf.varejo.tipo }})</p>
-                <!--<p>{{ produto.precos.pf.varejo.descricao }}</p>-->
-                <!--<p>{{ produto.precos.pf.varejo.precoAtual }}</p>-->
-                <p v-money-format="produto.precos.pf.varejo.precoAtual"></p>
+                <p>{{ pedido.id }}</p>
+
               </div>
 
-            <!--<i class="far fa-eye ver" @click="ver_produto(produto.id)"></i>-->
+            <!--<i class="far fa-eye ver" @click="pedido(pedido.id)"></i>-->
           </div>
         </div>
     </div>
 </template>
 
 <script>
-import AdicionarProduto from './AdicionarProduto.vue'
 export default {
-    components: { AdicionarProduto },
-    name: 'Produtos',
+    name: 'Pedidos',
     data: () => ({
       busca: '',
-      produtos: [],
-      produtos_filtrados: [],
-      tamanho_img: 200
+      pedidos: [],
+      pedidos_filtrados: [],
+      usuarioAtual: ''
     }),
-    computed: {
-      largura_img () {
-        //return 'width: ' + this.tamanho_img + 'px';
-        return 'height: ' + this.tamanho_img + 'px';
-      }
-    },
     created () {
        this.getData()
 
        window.addEventListener("resize", this.myEventHandler);
 
        this.myEventHandler()
+
+       //this.usuarioAtual = this.$firebase.auth().currentUser.uid
+       //console.log(this.usuarioAtual)
 
     },
     destroyed() {
@@ -59,23 +47,23 @@ export default {
     },
     methods: {
       getData() {
-        const ref = this.$firebase.database().ref('produtos')
+        const ref = this.$firebase.database().ref('pedidos')
 
         ref.on('value', snapshot => {
           const values = snapshot.val()
-          this.produtos = Object.keys(values).map(i => values[i])
+          this.pedidos = Object.keys(values).map(i => values[i])
 
-          //console.log(this.produtos[1].nome)
+          //console.log(this.pedidos[1].nome)
           //this.produtos_filtrados = this.produtos.filter(this.produtos.nome)
-          this.produtos_filtrados = []
-          for (var i = 0; i < this.produtos.length; i++) {
+          this.pedidos_filtrados = []
+          for (var i = 0; i < this.pedidos.length; i++) {
               //if (this.produtos[i].nome == "banan") {
-                if (this.produtos[i].nome.toUpperCase().includes(this.busca.toUpperCase())) {
-                  this.produtos_filtrados.push(this.produtos[i]);
+                if (this.pedidos[i].id.toUpperCase().includes(this.busca.toUpperCase())) {
+                  this.pedidos_filtrados.push(this.pedidos[i]);
 
               }
           }
-          //console.log(this.produtos_filtrados)
+          //console.log(this.pedidos_filtrados)
 
           //for (n.Object.keys(values) in this.produtos) {
             //if (n.nome == 'banan') {
@@ -87,8 +75,8 @@ export default {
 
         })
       },
-      ver_produto (idProduto) {
-        this.$router.push({ name: 'produto', params: { id: idProduto } })
+      ver_pedido (idPedido) {
+        this.$router.push({ name: 'pedido', params: { id: idPedido } })
         //console.log(idEntregador)
       },
       myEventHandler() {
@@ -128,33 +116,33 @@ h1 {
   text-align: left;
 }
 
-.produtos {
+.pedidos {
   width: 90%;
   padding: 1.5em 5%;
   display: table;
 }
 
-.buscar-produtos {
+.buscar-pedidos {
   width: 100%;
   display: table;
   margin-bottom: 1.5em;
   position: relative;
 }
 
-.buscar-produtos label {
+.buscar-pedidos label {
   padding: 1%;
   font-size: 1.2em;
 
 }
 
-.buscar-produtos input {
+.buscar-pedidos input {
   font-size: 1.2em !important;
   padding: 0.5em;
   width: calc(100% - 1em);
   margin-top: 0.2em;
 }
 
-.produto {
+.pedido {
   background-color: #999;
   margin: 0.5em;
   padding: 0.5em;
@@ -166,17 +154,6 @@ h1 {
   cursor: pointer;
 }
 
-.imagem-do-produto {
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-}
-
-.imagem-do-produto img {
-  width: 100%;
-  border-radius: 0.3em;
-}
-
 .info {
   min-height: 80px;
   font-size: 0.9em;
@@ -186,7 +163,7 @@ h1 {
 
 @media (max-width: 1199.98px) {
 
-.produto {
+.pedido {
   width: calc(15.6% - 1em);
   margin: 0.5%;
 }
@@ -197,7 +174,7 @@ h1 {
 
 @media (max-width: 991.98px) {
 
-.produto {
+.pedido {
   width: calc(24% - 1em);
   margin: 0.5%;
 }
@@ -212,7 +189,7 @@ h1 {
 
 @media (max-width: 767.98px) {
 
-.produto {
+.pedido {
   width: calc(30% - 1em);
   margin: 1%;
 }
@@ -229,7 +206,7 @@ h1 {
 
 @media (max-width: 575.98px) {
 
-.produto {
+.pedido {
   width: calc(47% - 1em);
   margin: 1%;
 }

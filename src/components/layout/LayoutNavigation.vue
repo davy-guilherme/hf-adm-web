@@ -27,11 +27,11 @@
                     Clientes
                     <i class="fas fa-users"></i>
                 </li>
-                <li>
+                <li @click="abrir_pedidos()">
                     Pedidos
                     <i class="fas fa-box-open"></i>
                 </li>
-                <li>
+                <li @click="abrir_paginas()">
                     Páginas
                     <i class="fas fa-laptop-code"></i>
                 </li>
@@ -89,6 +89,14 @@ export default {
         },
         abrir_produtos() {
             this.$router.push({ name: 'produtos' })
+            this.toogle_menu()
+        },
+        abrir_pedidos() {
+            this.$router.push({ name: 'pedidos' })
+            this.toogle_menu()
+        },
+        abrir_paginas() {
+            this.$router.push({ name: 'paginas'})
             this.toogle_menu()
         }
 
