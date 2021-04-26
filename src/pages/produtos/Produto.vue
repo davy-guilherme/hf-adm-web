@@ -610,9 +610,9 @@ export default {
                     },
 
                     /*descricao : data.val().descricao,
-                    posicao: data.val().posicao,
-                    visibilidade: data.val().visibilidade,*/
-                    arquivo: data.val().arquivo,
+                    posicao: data.val().posicao,*/
+                    visibilidade: data.val().visibilidade,
+                    arquivo: data.val().arquivo
 
 
                 })
@@ -649,8 +649,8 @@ export default {
                 this.formulario.precos.pj.atacado.limitePorCliente = this.produto[0].precos.pj.atacado.limitePorCliente,
 
                 /*this.formulario.descricao = this.banner[0].descricao
-                this.formulario.posicao = this.banner[0].posicao
-                this.formulario.visibilidade = this.banner[0].visibilidade*/
+                this.formulario.posicao = this.banner[0].posicao*/
+                this.formulario.visibilidade = this.produto[0].visibilidade
                 this.imagem = this.produto[0].arquivo
 
 

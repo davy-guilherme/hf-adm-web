@@ -1,16 +1,16 @@
 <template>
     <div>
-        <h1>Pedidos</h1>
-        <div class="pedidos">
-          <div class="buscar-pedidos">
-            <label for="buscar">Buscar em Pedidos:</label>
+        <h1>Clientes</h1>
+        <div class="clientes">
+          <div class="buscar-clientes">
+            <label for="buscar">Buscar em Clientes:</label>
             <input type="text" id="buscar" v-model="busca" @keyup="getData()" />
           </div>
 
-          <div class="pedido" v-for="pedido in pedidos_filtrados" :key="pedido.id" @click="ver_pedido(pedido.id)">
+          <div class="cliente" v-for="cliente in clientes_filtrados" :key="cliente.id" @click="ver_cliente(cliente.id)">
 
               <div class="info">
-                <p>{{ pedido.id }}</p>
+                <p>{{ cliente.nome }}</p>
 
               </div>
 
@@ -22,11 +22,11 @@
 
 <script>
 export default {
-    name: 'Pedidos',
+    name: 'Clientes',
     data: () => ({
       busca: '',
-      pedidos: [],
-      pedidos_filtrados: [],
+      clientes: [],
+      clientes_filtrados: [],
       usuarioAtual: ''
     }),
     created () {
@@ -47,24 +47,25 @@ export default {
     },
     methods: {
       getData() {
-        const ref = this.$firebase.database().ref('pedidos')
+        const ref = this.$firebase.database().ref('clientes')
+        console.log('este')
 
         ref.on('value', snapshot => {
           const values = snapshot.val()
-          this.pedidos = Object.keys(values).map(i => values[i])
+          this.clientes = Object.keys(values).map(i => values[i])
 
 
           //console.log(this.pedidos[1].nome)
           //this.produtos_filtrados = this.produtos.filter(this.produtos.nome)
-          this.pedidos_filtrados = []
-          for (var i = 0; i < this.pedidos.length; i++) {
+          this.clientes_filtrados = []
+          for (var i = 0; i < this.clientes.length; i++) {
               //if (this.produtos[i].nome == "banan") {
-                if (this.pedidos[i].id.toUpperCase().includes(this.busca.toUpperCase())) {
-                  this.pedidos_filtrados.push(this.pedidos[i]);
+                if (this.clientes[i].nome.toUpperCase().includes(this.busca.toUpperCase())) {
+                  this.clientes_filtrados.push(this.clientes[i]);
 
               }
           }
-          //console.log(this.pedidos_filtrados)
+          console.log(this.clientes)
 
           //for (n.Object.keys(values) in this.produtos) {
             //if (n.nome == 'banan') {
@@ -76,8 +77,8 @@ export default {
 
         })
       },
-      ver_pedido (idPedido) {
-        this.$router.push({ name: 'pedido', params: { id: idPedido } })
+      ver_cliente (idCliente) {
+        this.$router.push({ name: 'cliente', params: { id: idCliente } })
         //console.log(idEntregador)
       },
       myEventHandler() {
@@ -117,33 +118,33 @@ h1 {
   text-align: left;
 }
 
-.pedidos {
+.clientes {
   width: 90%;
   padding: 1.5em 5%;
   display: table;
 }
 
-.buscar-pedidos {
+.buscar-clientes {
   width: 100%;
   display: table;
   margin-bottom: 1.5em;
   position: relative;
 }
 
-.buscar-pedidos label {
+.buscar-clientes label {
   padding: 1%;
   font-size: 1.2em;
 
 }
 
-.buscar-pedidos input {
+.buscar-clientes input {
   font-size: 1.2em !important;
   padding: 0.5em;
   width: calc(100% - 1em);
   margin-top: 0.2em;
 }
 
-.pedido {
+.cliente {
   background-color: #999;
   margin: 0.5em;
   padding: 0.5em;
@@ -164,7 +165,7 @@ h1 {
 
 @media (max-width: 1199.98px) {
 
-.pedido {
+.cliente {
   width: calc(15.6% - 1em);
   margin: 0.5%;
 }
@@ -175,7 +176,7 @@ h1 {
 
 @media (max-width: 991.98px) {
 
-.pedido {
+.cliente {
   width: calc(24% - 1em);
   margin: 0.5%;
 }
@@ -190,7 +191,7 @@ h1 {
 
 @media (max-width: 767.98px) {
 
-.pedido {
+.cliente {
   width: calc(30% - 1em);
   margin: 1%;
 }
@@ -207,7 +208,7 @@ h1 {
 
 @media (max-width: 575.98px) {
 
-.pedido {
+.cliente {
   width: calc(47% - 1em);
   margin: 1%;
 }

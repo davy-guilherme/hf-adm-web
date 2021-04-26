@@ -23,7 +23,7 @@
                     Banners
                     <i class="fas fa-ad"></i>
                 </li>
-                <li>
+                <li @click="abrir_clientes()">
                     Clientes
                     <i class="fas fa-users"></i>
                 </li>
@@ -97,6 +97,10 @@ export default {
         },
         abrir_paginas() {
             this.$router.push({ name: 'paginas'})
+            this.toogle_menu()
+        },
+        abrir_clientes() {
+            this.$router.push({ name: 'clientes'})
             this.toogle_menu()
         }
 

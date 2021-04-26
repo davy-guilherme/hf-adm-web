@@ -1,8 +1,8 @@
 <template>
-    <div class="entregador">
-        <h1>{{ this.entregador[0] ? this.entregador[0].nome : '' }} <span>(Entregador)</span></h1>
-
-        <form @submit.prevent="submit()">
+    <div class="cliente">
+        <h1>{{ this.cliente[0] ? this.cliente[0].nome : '' }} <span>(Cliente)</span></h1>
+        <p class="c-info">Este cliente ainda não realizou nenhuma compra</p>
+        <form>
             <label class="f-label" for="email">Nome:</label>
             <input class="f-input" required type="text" v-model="formulario.nome" @change="$v.formulario.nome.$touch()" />
             <p class="f-erro" v-if="$v.formulario.nome.$error">Este campo é obrigatório</p>
@@ -20,20 +20,10 @@
             <input class="f-input" required type="text" v-model="formulario.tel" @change="$v.formulario.tel.$touch()" />
             <p class="f-erro" v-if="$v.formulario.tel.$error">Este campo é obrigatório</p>
 
-            <div class="os-checks">
-                <p>Modalidades</p>
-                <input type="checkbox" id="pedestre" name="pedestre" v-model="formulario.ape" />
-                <label class="l" for="pedestre"> Pedestre</label><br>
-                <input type="checkbox" id="bicicleta" name="bicicleta" v-model="formulario.bicicleta" />
-                <label for="bicicleta"> Bicicleta</label><br>
-                <input type="checkbox" id="moto" name="moto" v-model="formulario.moto" />
-                <label for="moto"> Moto</label><br>
-                <input type="checkbox" id="carro" name="carro" v-model="formulario.carro" />
-                <label for="carro"> Carro</label><br>
-            </div>
 
-            <button class="f-button">Salvar alterações</button>
-            <button type="button" @click="voltar()" class="f-button btn-cancelar">Fechar sem salvar</button>
+
+            <!--<button class="f-button">Salvar alterações</button>-->
+            <button type="button" @click="voltar()" class="f-button btn-cancelar">Fechar</button>
 
         </form>
 
@@ -44,19 +34,15 @@
 import { required } from 'vuelidate/lib/validators'
 
 export default {
-    name: 'ComponenteEntregador',
+    name: 'ComponenteCliente',
     data: () => ({
-        entregadorId : '',
-        entregador : [],
+        clienteId : '',
+        cliente : [],
         formulario: {
             nome: '',
             cpf: '',
             nascimento: '',
-            tel: '',
-            ape: false,
-            bicicleta: false,
-            moto: false,
-            carro: false
+            tel: ''
         }
     }),
     validations : {
@@ -95,8 +81,8 @@ export default {
     methods: {
         voltar () {
             this.$router.go(-1)
-        },
-        submit () {
+        }
+        /* submit () {
 
             if (!this.$v.$invalid) {
                 this.$root.$emit('Spinner::show')
@@ -139,36 +125,36 @@ export default {
             } else {
                 this.$v.$touch()
             }
-        }
+        } */
 
     },
     created() {
-        this.entregadorId = this.$route.params.id
+        this.clienteId = this.$route.params.id
 
 
 
-        this.$firebase.database().ref(`entregadores/${this.entregadorId}`).once('value').then(
+        this.$firebase.database().ref(`clientes/${this.clienteId}`).once('value').then(
             (data) => {
-                this.entregador.push({
+                this.cliente.push({
                     key : data.val().key,
                     nome : data.val().nome,
                     cpf : data.val().cpf,
                     nascimento : data.val().nascimento,
-                    tel : data.val().tel,
-                    ape : data.val().ape,
+                    tel : data.val().tel
+                    /* ape : data.val().ape,
                     bicicleta: data.val().bicicleta,
                     moto: data.val().moto,
-                    carro: data.val().carro
+                    carro: data.val().carro */
                 })
 
-                this.formulario.nome = this.entregador[0].nome
-                this.formulario.cpf = this.entregador[0].cpf
-                this.formulario.nascimento = this.entregador[0].nascimento
-                this.formulario.tel = this.entregador[0].tel
-                this.formulario.ape = this.entregador[0].ape
+                this.formulario.nome = this.cliente[0].nome
+                this.formulario.cpf = this.cliente[0].cpf
+                this.formulario.nascimento = this.cliente[0].nascimento
+                this.formulario.tel = this.cliente[0].tel
+                /* this.formulario.ape = this.entregador[0].ape
                 this.formulario.bicicleta = this.entregador[0].bicicleta
                 this.formulario.moto = this.entregador[0].moto
-                this.formulario.carro = this.entregador[0].carro
+                this.formulario.carro = this.entregador[0].carro */
             }
         ).catch(
             (err) => {
@@ -187,7 +173,7 @@ export default {
 
 <style scoped lang="scss">
 
-.entregador {
+.cliente {
     background-color: #ddd;
     width: 100% !important;
     min-height: 100vh; //nao ta muito bacana
@@ -200,6 +186,10 @@ h1 {
 
 h1 span {
     font-size: 70%;
+}
+
+.c-info {
+  padding: 1em 5%;
 }
 
 form {

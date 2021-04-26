@@ -128,8 +128,8 @@ export default {
                         arquivo: this.formulario.arquivo
                     }
 
-                    console.log(payload)
-                    console.log(referencia)
+                    //console.log(payload)
+                    //console.log(referencia)
 
                     referencia.set(payload, err => {
                         if (err) {
