@@ -6,8 +6,14 @@
       <p>Voce tem 5 pedidos aguardando o envio</p>
     </div>-->
     <div id="geral">
+
+      <div class="box-geral box-geral-produtos-cadastrados">
+        <p class="rotulo" @click="link_produtos()">Produtos Cadastrados</p>
+        <p class="valor">{{ totalProdutosCadastrados }}</p>
+      </div>
+
       <div class="box-geral box-geral-clientes">
-        <p class="rotulo">Clientes Cadastrados</p>
+        <p class="rotulo" @click="link_clientes()">Clientes Cadastrados</p>
         <p class="valor">{{ totalClientes }}</p>
       </div>
 
@@ -35,7 +41,9 @@ export default {
       totalClientes: '',
       totalPedidosEAbertos: '',
       totalPedidosEmTransito: '',
-      totalPedidosEmSeparacao: ''
+      totalPedidosEmSeparacao: '',
+      totalProdutosCadastrados: '',
+      totalProdutosAtivos: ''
     }
   },
   created () {
@@ -49,6 +57,8 @@ export default {
                 this.totalPedidosEmAberto = data.val().totalPedidosEmAberto
                 this.totalPedidosEmSeparacao = data.val().totalPedidosEmSeparacao
                 this.totalPedidosEmTransito = data.val().totalPedidosEmTransito
+                this.totalProdutosCadastrados = data.val().totalProdutosCadastrados
+                this.totalProdutosAtivos = data.val().totalProdutosAtivos
                 //console.log(data)
             }
         ).catch(
@@ -57,6 +67,12 @@ export default {
             }
         )
 
+    },
+    link_clientes() {
+      this.$router.push({ name: 'clientes'})
+    },
+    link_produtos() {
+      this.$router.push({ name: 'produtos'})
     }
   }
 }
@@ -84,14 +100,98 @@ h1 {
 .box-geral {
   position: relative;
   float: left;
-  width: calc(20% - 1em);
+  width: calc(20% - 2em);
   margin: 0.5em;
+  height: 95px;
   padding: 0.5em;
   background-color: white;
   border-radius: 0.5em;
   .rotulo {
-    height: 70px;
+    font-size: 1.1em;
+    cursor: pointer;
   }
+  .valor {
+    position: absolute;
+    bottom: 0.5em;
+    right: 0.5em;
+    font-size: 2em;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@media (max-width: 1199.98px) {
+
+
+
+}
+
+@media (max-width: 991.98px) {
+
+.box-geral {
+  width: calc(25% - 2em);
+  margin: 0.5em;
+  height: 95px;
+  padding: 0.5em;
+  .rotulo {
+    font-size: 1.1em;
+  }
+  .valor {
+    position: absolute;
+    bottom: 0.5em;
+    right: 0.5em;
+    font-size: 2em;
+  }
+}
+
+}
+
+@media (max-width: 767.98px) {
+
+.box-geral {
+  width: calc(50% - 2em);
+  margin: 0.5em;
+  height: 105px;
+  padding: 0.5em;
+  .rotulo {
+    font-size: 1.1em;
+  }
+  .valor {
+    position: absolute;
+    bottom: 0.5em;
+    right: 0.5em;
+    font-size: 2em;
+  }
+}
+
+
+}
+
+@media (max-width: 575.98px) {
+
+/* .box-geral {
+  position: relative;
+  float: left;
+  width: calc(100% - 2em);
+  margin: 0.5em;
+  height: 105px;
+  padding: 0.5em;
+  background-color: white;
+  border-radius: 0.5em;
+  .rotulo {
+    font-size: 1.1em;
+  }
+  .valor {
+    position: absolute;
+    bottom: 0.5em;
+    right: 0.5em;
+    font-size: 2em;
+    margin: 0;
+    padding: 0;
+  }
+} */
+
+
 }
 
 

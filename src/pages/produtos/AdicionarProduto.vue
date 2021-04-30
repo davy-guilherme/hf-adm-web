@@ -299,7 +299,13 @@ export default {
             posicao: '',
             visibilidade: false,
             arquivo: ''
-        }
+        },
+        totalClientes: '',
+        totalPedidosEmAberto: '',
+        totalPedidosEmSeparacao: '',
+        totalPedidosEmTransito: '',
+        totalProdutosCadastrados: '',
+        totalProdutosAtivos: ''
     }),
     validations : {
         formulario: {
@@ -542,6 +548,8 @@ export default {
 
                             this.apagar_dados();
 
+                            this.buscarEstatisticas ()
+
                             this.toogle_modal()
                         }
                     })
@@ -554,12 +562,43 @@ export default {
                 //colocar o firebase em jogo! (soh na funcao, talvez???)
                 //const referencia = this.$firebase.database().ref('entregadores/' + window.uid) // acessa o id de usuario que ja existe OU cria um novo
 
-
             } else {
                 this.$v.$touch()
             }
 
 
+        },
+        buscarEstatisticas () {
+            this.$firebase.database().ref('estatisticas').once('value').then(
+                (data) => {
+                this.totalClientes = data.val().totalClientes
+                this.totalPedidosEmAberto = data.val().totalPedidosEmAberto
+                this.totalPedidosEmSeparacao = data.val().totalPedidosEmSeparacao
+                this.totalPedidosEmTransito = data.val().totalPedidosEmTransito
+                this.totalProdutosCadastrados = data.val().totalProdutosCadastrados
+                //console.log(data.val())
+                this.atualizarEstatisticas()
+                }
+            ).catch(
+                (err) => {
+                console.log(err)
+                }
+            )
+        },
+        atualizarEstatisticas () {
+            const referencia2 = this.$firebase.database().ref('estatisticas')
+            const payload = {
+                totalProdutosCadastrados: parseInt(this.totalProdutosCadastrados) + 1
+            }
+            console.log('payload: ')
+            console.log(payload)
+            referencia2.update(payload, err => {
+                if (err) {
+                //console.log('erro para registrar a estatistica')
+                } else {
+                //console.log('estatistica atualizada')
+                }
+            })
         },
         openFileDialog() {
             this.$refs.inputImagem.click()

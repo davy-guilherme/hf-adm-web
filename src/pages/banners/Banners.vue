@@ -73,7 +73,7 @@ h1 {
   padding: 0.5em;
   border-radius: 0.5em;
   position: relative;
-  width: 100%;
+  width: calc(100% - 1em);
   display: table;
 }
 
