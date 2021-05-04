@@ -1,37 +1,22 @@
 <template>
     <div class="cliente">
-        <h1>{{ this.cliente[0] ? this.cliente[0].nome : '' }} <span>(Cliente)</span></h1>
-        <p class="c-info">Este cliente ainda não realizou nenhuma compra</p>
-        <form>
-            <label class="f-label" for="email">Nome:</label>
-            <input class="f-input" required type="text" v-model="formulario.nome" @change="$v.formulario.nome.$touch()" />
-            <p class="f-erro" v-if="$v.formulario.nome.$error">Este campo é obrigatório</p>
+        <h1>{{ this.cliente ? this.cliente.nome : '' }} <span>(Cliente)</span></h1>
+        <p v-if="pedidos.length > 0" class="c-info">Este cliente realizou {{ this.pedidos.length }} {{ this.pedidos.length === 1 ? 'pedido' : 'pedidos' }}.</p>
+        <p v-else class="c-info">Este cliente ainda não realizou nenhum pedido.</p>
+        <div class="info">
+            <p>E-mail: {{ this.cliente.email }}</p>
+            <p>Tipo de Cliente: {{ this.cliente.tipoCliente }}</p>
 
-            <label class="f-label" for="cpf">CPF:</label>
-            <input class="f-input" required type="text" v-model="formulario.cpf" @change="$v.formulario.cpf.$touch()" />
-            <p class="f-erro" v-if="$v.formulario.cpf.$error">Este campo é obrigatório</p>
-
-
-            <label class="f-label" for="cpf">Nascimento:</label>
-            <input class="f-input" required type="date" v-model="formulario.nascimento" @change="$v.formulario.nascimento.$touch()" />
-            <p class="f-erro" v-if="$v.formulario.nascimento.$error">Este campo é obrigatório</p>
-
-            <label class="f-label" for="telefone">Telefone:</label>
-            <input class="f-input" required type="text" v-model="formulario.tel" @change="$v.formulario.tel.$touch()" />
-            <p class="f-erro" v-if="$v.formulario.tel.$error">Este campo é obrigatório</p>
-
-
-
-            <!--<button class="f-button">Salvar alterações</button>-->
+        <!--<button class="f-button">Salvar alterações</button>-->
             <button type="button" @click="voltar()" class="f-button btn-cancelar">Fechar</button>
 
-        </form>
+        </div>
 
     </div>
 </template>
 
 <script>
-import { required } from 'vuelidate/lib/validators'
+// import { required } from 'vuelidate/lib/validators'
 
 export default {
     name: 'ComponenteCliente',
@@ -39,19 +24,12 @@ export default {
         clienteId : '',
         cliente : [],
         formulario: {
-            nome: '',
-            cpf: '',
-            nascimento: '',
-            tel: ''
-        }
+
+        },
+        pedidos: []
     }),
     validations : {
-        formulario: {
-            nome : { required },
-            cpf : { required },
-            nascimento : { required },
-            tel: { required },
-        }
+
     },
     computed: {
         cpfMask() {
@@ -135,26 +113,13 @@ export default {
 
         this.$firebase.database().ref(`clientes/${this.clienteId}`).once('value').then(
             (data) => {
-                this.cliente.push({
-                    key : data.val().key,
-                    nome : data.val().nome,
-                    cpf : data.val().cpf,
-                    nascimento : data.val().nascimento,
-                    tel : data.val().tel
-                    /* ape : data.val().ape,
-                    bicicleta: data.val().bicicleta,
-                    moto: data.val().moto,
-                    carro: data.val().carro */
-                })
+                this.cliente = data.val()
 
-                this.formulario.nome = this.cliente[0].nome
-                this.formulario.cpf = this.cliente[0].cpf
-                this.formulario.nascimento = this.cliente[0].nascimento
-                this.formulario.tel = this.cliente[0].tel
-                /* this.formulario.ape = this.entregador[0].ape
-                this.formulario.bicicleta = this.entregador[0].bicicleta
-                this.formulario.moto = this.entregador[0].moto
-                this.formulario.carro = this.entregador[0].carro */
+                const values = data.val().pedidos
+                this.pedidos = Object.keys(values).map(i => values[i])
+
+                console.log(this.pedidos)
+
             }
         ).catch(
             (err) => {
@@ -192,7 +157,7 @@ h1 span {
   padding: 1em 5%;
 }
 
-form {
+.info {
     padding: 1em 5%;
 }
 

@@ -54,6 +54,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "pedidos" */ '../pages/pedidos/Pedidos')
   },
   {
+    path: '/pedido/:id',
+    name: 'pedido',
+    component: () => import(/* webpackChunkName: "pedido" */ '../pages/pedidos/Pedido')
+  },
+  {
     path: '/paginas',
     name: 'paginas',
     component: () => import(/* webpackChunkName: "paginas" */ '../pages/paginas/Paginas')

@@ -40,12 +40,18 @@ export default {
       window.uid = user ? user.uid : null
       this.isLogged = !!user
 
+      /* if (!window.uid) {
+        this.$router.push({ name : 'login' })
+
+      }*/
+
       if (window.uid) {
         this.$router.push({ name : 'home' })
 
       } else {
         this.$router.push({ name : 'login' })
       }
+
       setTimeout(() => {
         this.$root.$emit('Spinner::hide')
       }, 300)
