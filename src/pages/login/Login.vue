@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="login"><div class="bg-branco">
         <form @submit.prevent="fazerLogin()" id="box-login">
             <h1>Acesso</h1>
             <label for="email">E-mail:</label>
@@ -19,7 +19,7 @@
             </button>
 
         </form>
-    </div>
+    </div></div>
 
 </template>
 
@@ -50,6 +50,7 @@ export default {
                 //this.$router.push({ name: 'home' })
                 this.$root.$emit('Notification::show', {
                     type: 'n-sucesso',
+                    title: 'Pronto!',
                     message: 'Login realizado com sucesso.'
                 })
 
@@ -69,7 +70,8 @@ export default {
 
                 this.$root.$emit('Notification::show', {
                     type: 'n-erro',
-                    message: message
+                    message: message,
+                    title: 'Ops...'
                 })
 
             }
@@ -90,7 +92,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-div {
+.login {
 
     height: auto;
     position: absolute;
@@ -99,10 +101,29 @@ div {
     display: flex;
     align-items: center; //vertial
     justify-content: center; //horizontal
+    margin: 0;
+    padding: 0;
+    background-image: url('~@/assets/img/fundo-pera.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+.bg-branco {
+    height: auto;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center; //vertial
+    justify-content: center; //horizontal
+    margin: 0;
+    padding: 0;
+    background-color: rgba($color: #fff, $alpha: 0.25);
 }
 
 #box-login {
-    background-color: var(--dark-low);
+    background-color: var(--light-low);
     width: 33%;
     height: auto;
     color: white;

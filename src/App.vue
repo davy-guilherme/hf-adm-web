@@ -4,6 +4,7 @@
     <layout-notification />
     <layout v-if="isLogged">
       <layout-navigation />
+      <layout-top-bar />
       <router-view id="conteudo" />
     </layout>
 
@@ -16,13 +17,16 @@
 import BaseSpinner from './components/global/BaseSpinner'
 import LayoutNavigation from './components/layout/LayoutNavigation'
 import LayoutNotification from './components/layout/LayoutNotification'
+import LayoutTopBar from './components/layout/LayoutTopBar'
+
 
 export default {
   name: 'AppComponente',
   components: {
     BaseSpinner,
     LayoutNavigation,
-    LayoutNotification
+    LayoutNotification,
+    LayoutTopBar
   },
   data: () => ({
     isLogged: false

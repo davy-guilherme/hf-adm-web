@@ -136,11 +136,13 @@ export default {
                             //chamar a notificacao
                             this.$root.$emit('Notification::show', {
                                 type: 'n-erro',
+                                title: 'Algo deu errado',
                                 message: 'Não foi possível alterar o banner'
                             })
                         } else {
                             this.$root.$emit('Notification::show', {
                                 type: 'n-sucesso',
+                                title: 'Tudo certo',
                                 message: 'O banner foi alterado com sucesso.'
                             })
                             this.$router.go(-1)

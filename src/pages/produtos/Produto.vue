@@ -521,11 +521,13 @@ export default {
                             //chamar a notificacao
                             this.$root.$emit('Notification::show', {
                                 type: 'n-erro',
+                                title: 'Algo deu errado',
                                 message: 'Não foi possível alterar o produto'
                             })
                         } else {
                             this.$root.$emit('Notification::show', {
                                 type: 'n-sucesso',
+                                title: 'Tudo certo',
                                 message: 'O produto foi alterado com sucesso.'
                             })
                             this.$router.go(-1)

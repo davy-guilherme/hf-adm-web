@@ -80,6 +80,7 @@ export default {
 
 <style scoped lang="scss">
 
+
 h1 {
   padding: 0.5em 5%;
   text-align: left;
@@ -102,7 +103,7 @@ h1 {
   float: left;
   width: calc(20% - 2em);
   margin: 0.5em;
-  height: 95px;
+  height: 110px;
   padding: 0.5em;
   background-color: white;
   border-radius: 0.5em;
@@ -131,7 +132,7 @@ h1 {
 .box-geral {
   width: calc(25% - 2em);
   margin: 0.5em;
-  height: 95px;
+  height: 115px;
   padding: 0.5em;
   .rotulo {
     font-size: 1.1em;
@@ -151,7 +152,7 @@ h1 {
 .box-geral {
   width: calc(50% - 2em);
   margin: 0.5em;
-  height: 105px;
+  height: 120px;
   padding: 0.5em;
   .rotulo {
     font-size: 1.1em;
